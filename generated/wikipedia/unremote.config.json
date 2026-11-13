@@ -1,0 +1,371 @@
+{
+  "name": "wikipedia",
+  "base_url": "https://{lang}.wikipedia.org",
+  "headers": {
+    "x-wmf-uuid": "f16668a1-86e6-437b-8fdd-d65f1b8cae48"
+  },
+  "auth": null,
+  "tools": [
+    {
+      "name": "search_articles",
+      "description": "Search Wikipedia article titles by prefix as the user types a topic, returning matching pages with short description and thumbnail. Use the returned title with get_article_summary or get_article_content to open the best match.",
+      "endpoint": "GET https://{lang}.wikipedia.org/w/api.php?action=query&prop=description|pageimages|coordinates|info&generator=prefixsearch",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "field": "gpssearch",
+          "type": "string",
+          "required": true,
+          "description": "Search text or title prefix, e.g. \"Solar System\"."
+        },
+        {
+          "name": "thumbnail_size",
+          "in": "query",
+          "field": "pithumbsize",
+          "type": "integer",
+          "required": false,
+          "description": "Desired thumbnail width in pixels, e.g. 330."
+        }
+      ],
+      "fixed": {
+        "format": "json",
+        "formatversion": "2",
+        "errorformat": "html",
+        "errorsuselocal": "1",
+        "action": "query",
+        "redirects": "",
+        "converttitles": "",
+        "prop": "description|pageimages|coordinates|info",
+        "piprop": "thumbnail",
+        "pilicense": "any",
+        "generator": "prefixsearch",
+        "gpsnamespace": "0",
+        "inprop": "varianttitles|displaytitle",
+        "gpslimit": "30",
+        "gpsoffset": "0"
+      }
+    },
+    {
+      "name": "get_article_summary",
+      "description": "Get an article's summary: title, short description, intro extract, thumbnail and canonical URLs. The title comes from search_articles (title field) or from get_article_languages for another language.",
+      "endpoint": "GET https://{lang}.wikipedia.org/api/rest_v1/page/summary/{summary}",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "title",
+          "in": "path",
+          "field": "summary",
+          "type": "string",
+          "required": true,
+          "description": "Article title with underscores for spaces, e.g. \"Solar_System\". From search_articles or get_article_languages."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "get_article_content",
+      "description": "Fetch the full readable article as mobile HTML so it can be read. Text size and dark/sepia themes are client-side display settings, not API options. Title comes from search_articles or get_article_languages.",
+      "endpoint": "GET https://{lang}.wikipedia.org/api/rest_v1/page/mobile-html/{mobile_html}",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain of the article, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "title",
+          "in": "path",
+          "field": "mobile_html",
+          "type": "string",
+          "required": true,
+          "description": "Article title with underscores, e.g. \"Solar_System\" or \"Sonnestelsel\"."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "get_article_media",
+      "description": "List the images and media used in an article with captions and source URLs. Title comes from search_articles or get_article_languages.",
+      "endpoint": "GET https://{lang}.wikipedia.org/api/rest_v1/page/media-list/{media_list}",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain of the article, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "title",
+          "in": "path",
+          "field": "media_list",
+          "type": "string",
+          "required": true,
+          "description": "Article title in that language, e.g. \"Solar_System\"."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "get_article_languages",
+      "description": "List the other-language versions of an article (language code and translated title). Pass a language code and title from here to get_article_summary or get_article_content to read it in that language.",
+      "endpoint": "GET https://{lang}.wikipedia.org/w/api.php?action=query&prop=langlinks",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Language subdomain of the source article, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "titles",
+          "in": "query",
+          "field": "titles",
+          "type": "string",
+          "required": true,
+          "description": "Article title, e.g. \"Solar_System\". From search_articles or get_article_summary (titles.canonical)."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "field": "lllimit",
+          "type": "integer",
+          "required": false,
+          "description": "Max number of language links to return, e.g. 500."
+        }
+      ],
+      "fixed": {
+        "format": "json",
+        "formatversion": "2",
+        "errorformat": "html",
+        "errorsuselocal": "1",
+        "action": "query",
+        "prop": "langlinks",
+        "redirects": "",
+        "converttitles": ""
+      }
+    },
+    {
+      "name": "list_wikipedia_languages",
+      "description": "List all Wikipedia language editions with code, English name and local name, for building a language switcher. Codes are used as lang in other tools.",
+      "endpoint": "GET https://{lang}.wikipedia.org/w/api.php?action=sitematrix",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain, e.g. \"en\" (usual value)."
+        }
+      ],
+      "fixed": {
+        "format": "json",
+        "formatversion": "2",
+        "errorformat": "html",
+        "errorsuselocal": "1",
+        "action": "sitematrix",
+        "smtype": "language",
+        "smlangprop": "code|name|localname",
+        "maxage": "86400",
+        "smaxage": "86400"
+      }
+    },
+    {
+      "name": "get_article_info",
+      "description": "Get page metadata (display title, language, content model, description, thumbnail) for an article title in a given language edition; useful to confirm a translated article exists before opening or saving it. Title comes from get_article_languages.",
+      "endpoint": "GET https://{lang}.wikipedia.org/w/api.php?action=query&prop=info|description|pageimages",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Language subdomain of the edition to query, a code from list_wikipedia_languages or get_article_languages, e.g. \"af\"."
+        },
+        {
+          "name": "titles",
+          "in": "query",
+          "field": "titles",
+          "type": "string",
+          "required": true,
+          "description": "Article title in that language, e.g. \"Sonnestelsel\"."
+        },
+        {
+          "name": "thumbnail_size",
+          "in": "query",
+          "field": "pithumbsize",
+          "type": "integer",
+          "required": false,
+          "description": "Desired thumbnail width in pixels, e.g. 330."
+        }
+      ],
+      "fixed": {
+        "format": "json",
+        "formatversion": "2",
+        "errorformat": "html",
+        "errorsuselocal": "1",
+        "action": "query",
+        "prop": "info|description|pageimages",
+        "pilicense": "any",
+        "inprop": "varianttitles|displaytitle",
+        "redirects": "1"
+      }
+    },
+    {
+      "name": "get_featured_feed",
+      "description": "Get the Explore feed for a date: today's featured article, most-read articles, picture of the day, news stories, On this day events and Did you know items.",
+      "endpoint": "GET https://{lang}.wikipedia.org/api/rest_v1/feed/featured/{year}/{month}/{day}",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "year",
+          "in": "path",
+          "field": "year",
+          "type": "string",
+          "required": true,
+          "description": "Four-digit year, e.g. \"2026\"."
+        },
+        {
+          "name": "month",
+          "in": "path",
+          "field": "month",
+          "type": "string",
+          "required": true,
+          "description": "Two-digit month, e.g. \"11\"."
+        },
+        {
+          "name": "day",
+          "in": "path",
+          "field": "day",
+          "type": "string",
+          "required": true,
+          "description": "Two-digit day of month, e.g. \"13\"."
+        }
+      ],
+      "fixed": {
+        "lang": "en"
+      }
+    },
+    {
+      "name": "get_on_this_day",
+      "description": "List historical events that happened on a given month and day, with linked articles.",
+      "endpoint": "GET https://{lang}.wikipedia.org/api/rest_v1/feed/onthisday/events/{month}/{day}",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "month",
+          "in": "path",
+          "field": "month",
+          "type": "string",
+          "required": true,
+          "description": "Two-digit month, e.g. \"11\"."
+        },
+        {
+          "name": "day",
+          "in": "path",
+          "field": "day",
+          "type": "string",
+          "required": true,
+          "description": "Two-digit day of month, e.g. \"13\"."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "get_random_articles",
+      "description": "Get a batch of random articles (up to 40) with intro extract, description and thumbnail, for browsing the Explore feed.",
+      "endpoint": "GET https://{lang}.wikipedia.org/w/api.php?action=query&prop=pageprops|pageimages|description|info|extracts&generator=random",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "lang",
+          "in": "path",
+          "field": "lang",
+          "type": "string",
+          "required": true,
+          "description": "Wikipedia language subdomain, e.g. \"en\" (usual value)."
+        },
+        {
+          "name": "extract_chars",
+          "in": "query",
+          "field": "exchars",
+          "type": "integer",
+          "required": false,
+          "description": "Max characters of intro extract per article, e.g. 500."
+        },
+        {
+          "name": "thumbnail_size",
+          "in": "query",
+          "field": "pithumbsize",
+          "type": "integer",
+          "required": false,
+          "description": "Desired thumbnail width in pixels, e.g. 330."
+        }
+      ],
+      "fixed": {
+        "format": "json",
+        "formatversion": "2",
+        "errorformat": "html",
+        "errorsuselocal": "1",
+        "action": "query",
+        "generator": "random",
+        "grnfilterredir": "nonredirects",
+        "grnnamespace": "0",
+        "prop": "pageprops|pageimages|description|info|extracts",
+        "exintro": "1",
+        "explaintext": "1",
+        "piprop": "thumbnail",
+        "pilicense": "any",
+        "inprop": "varianttitles|displaytitle",
+        "grnlimit": "40"
+      }
+    }
+  ]
+}

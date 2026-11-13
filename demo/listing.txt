@@ -1,0 +1,13 @@
+ShowTime — Movie Tickets
+Entertainment · Rated 3+
+
+Book movie tickets in seconds. ShowTime lets you browse what's playing in your city, check showtimes at nearby theatres for today, tomorrow and the day after, pick your exact seats on a live seat map, and hold them while you pay. Keep track of everything you've booked under My bookings.
+
+• Choose your city: Bengaluru and Delhi
+• See what's now showing, with rating and runtime
+• Showtimes and prices across theatres for the next three days
+• Live seat map — see free and taken seats
+• Hold seats for 10 minutes and get a secure payment link
+• My bookings: every booking in one place
+
+Sign in with your ShowTime account to pick seats and book.

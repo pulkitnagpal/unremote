@@ -1,0 +1,77 @@
+<title>Unremote Film Boards</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a whiteboard wall of six frames in film order, two across, one across on a phone. One light look by choice: it is the film's own paper. */
+:root {
+  --paper: #FAF9F6; --dot: #E5E2DB; --ink: #16161A; --body: #3F3F46; --muted: #6B6B74; --green: #1FB57A; --green-ink: #0B7A50; --line: #E6E3DD;
+  --sans: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; --hand: 'Caveat', 'Bradley Hand', cursive; --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+html { background: var(--paper); }
+body { background: var(--paper) radial-gradient(circle, var(--dot) 1.4px, transparent 1.6px) 0 0 / 28px 28px; color: var(--ink); font-family: var(--sans); }
+.wrap { max-width: 1480px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 36px; }
+header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; }
+header .logo { height: 52px; width: auto; display: block; }
+header .meta { font: 500 15px/1.5 var(--mono); color: var(--muted); text-align: right; }
+.intro { display: flex; flex-direction: column; gap: 6px; max-width: 64ch; }
+.intro h1 { margin: 0; font: 700 34px/1.15 var(--sans); letter-spacing: -0.025em; text-wrap: balance; }
+.intro p { margin: 0; font: 400 17px/1.55 var(--sans); color: var(--body); }
+.intro .hand { font: 600 30px/1.1 var(--hand); color: var(--green-ink); }
+.wall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 32px; }
+@media (max-width: 860px) { .wall { grid-template-columns: minmax(0, 1fr); } }
+figure { margin: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: var(--paper); border: 2px solid var(--ink); border-radius: 14px 18px 12px 20px / 18px 12px 20px 14px; box-shadow: 0 24px 50px -36px rgba(22,22,26,.45); }
+.frame > .uf-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+figcaption { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 4px 12px; padding: 0 4px; }
+figcaption .n { font: 700 15px var(--mono); color: var(--green-ink); }
+figcaption .t { font: 700 30px/1 var(--hand); }
+figcaption .at { font: 500 14px var(--mono); color: var(--muted); white-space: nowrap; }
+figcaption .note { grid-column: 1 / -1; margin: 0; font: 400 15.5px/1.55 var(--sans); color: var(--body); max-width: 70ch; }
+figcaption code { font: 500 14px var(--mono); background: #EFEDE8; border-radius: 5px; padding: 1px 5px; }
+footer { font: 400 14px/1.6 var(--sans); color: var(--muted); border-top: 1.5px solid var(--line); padding-top: 18px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+/*FILM_CSS*/
+</style>
+
+<div class="wrap">
+  <header>
+    <!--LOGO-->
+    <div class="meta">Launch film 1.0 · 64 s · 1920×1080 · 60 fps</div>
+  </header>
+  <div class="intro">
+    <span class="hand">Seven frames, in film order.</span>
+    <h1>A person books two seats by hand. The agent learns the app once. Claude Code books with one sentence.</h1>
+    <p>Each board below is the film itself, stopped at that moment: the same code renders the video. The phone footage, the agent's steps, the endpoints and Claude's reply are all real captures from ShowTime, the demo app.</p>
+  </div>
+  <div class="wall" id="wall"></div>
+  <footer>Unremote turns any Android app into an MCP server. Open source: github.com/pulkitnagpal/unremote</footer>
+</div>
+
+<script>/*FILM_DATA*/</script>
+<script>/*FILM_JS*/</script>
+<script>
+(function () {
+  const BOARDS = /*BOARDS*/;
+  const wall = document.getElementById('wall');
+  const frames = BOARDS.map((b, i) => {
+    const fig = document.createElement('figure');
+    fig.innerHTML = `<div class="frame" role="img" aria-label="${b.title}"></div><figcaption><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t">${b.title}</span><span class="at">${b.at}</span><p class="note">${b.note}</p></figcaption>`;
+    wall.appendChild(fig);
+    return fig.querySelector('.frame');
+  });
+  // the film measures its own text, so each stage is built again once the fonts are in
+  const build = () => frames.forEach((frame, i) => {
+    frame.textContent = '';
+    const film = UnremoteFilm.mount(frame, window.UNREMOTE_DATA);
+    const fit = () => { film.stage.style.transform = `scale(${frame.clientWidth / 1920})`; };
+    fit();
+    if (!frame._ro) { frame._ro = new ResizeObserver(() => frame._fit && frame._fit()); frame._ro.observe(frame); }
+    frame._fit = fit;
+    film.seek(BOARDS[i].t);
+  });
+  build();
+  if (document.fonts) document.fonts.ready.then(build);
+})();
+</script>

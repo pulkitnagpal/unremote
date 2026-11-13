@@ -1,0 +1,51 @@
+[
+  {
+    "tool": "list_cities",
+    "args": {},
+    "expect_keys": [
+      "cities"
+    ]
+  },
+  {
+    "tool": "list_movies",
+    "args": {
+      "city_id": "BLR"
+    },
+    "expect_keys": [
+      "items"
+    ]
+  },
+  {
+    "tool": "list_showtimes",
+    "args": {
+      "movie_id": "mv_dune3",
+      "city_id": "BLR",
+      "date": "2026-11-13"
+    },
+    "expect_keys": [
+      "movie_id",
+      "shows"
+    ]
+  },
+  {
+    "tool": "get_seatmap",
+    "args": {
+      "show_id": 66166
+    },
+    "expect_keys": [
+      "date",
+      "rows",
+      "show_id",
+      "starts_at",
+      "theatre",
+      "title"
+    ]
+  },
+  {
+    "tool": "list_my_bookings",
+    "args": {},
+    "expect_keys": [
+      "bookings"
+    ]
+  }
+]

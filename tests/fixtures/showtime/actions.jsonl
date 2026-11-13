@@ -1,0 +1,11 @@
+{"t": 1000, "action": "launch", "screen": "", "goal": "start"}
+{"t": 1010, "action": "type \"demo@showtime.test\" into \"Email\"", "screen": "Log in", "goal": "Sign in"}
+{"t": 1015, "action": "type \"fixture-pass\" into \"Password\"", "screen": "Log in", "goal": "Sign in"}
+{"t": 1020, "action": "tap \"Log in\"", "screen": "Log in", "goal": "Sign in"}
+{"t": 1030, "action": "tap \"Bengaluru\"", "screen": "Choose your city", "goal": "Pick a city"}
+{"t": 1050, "action": "tap \"Today (2026-11-13)\"", "screen": "Dune", "goal": "See showtimes"}
+{"t": 1060, "action": "tap \"PVR Orion \u00b7 19:00 \u00b7 \u20b9320\"", "screen": "Dune \u00b7 2026-11-13", "goal": "Pick seats"}
+{"t": 1070, "action": "tap \"HOLD 2 SEAT(S)\"", "screen": "Pick seats", "goal": "Hold seats"}
+{"t": 1080, "action": "tap \"Proceed to pay\"", "screen": "Seats held", "goal": "Payment link"}
+{"t": 1090, "action": "tap \"My bookings\"", "screen": "Choose your city", "goal": "My bookings"}
+{"t": 1100, "action": "type \"dune\" into \"Search movies\"", "screen": "Now showing", "goal": "Search"}

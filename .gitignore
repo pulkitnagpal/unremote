@@ -1,0 +1,19 @@
+# Captured traffic holds tokens, device ids and personal data: never commit it.
+runs/
+node_modules/
+.env
+*.log
+# The demo API's TLS key is generated locally by demo/setup.sh.
+demo/backend/*.pem
+demo/android/app/src/main/res/raw/*.pem
+demo/android/.gradle/
+demo/android/build/
+demo/android/app/build/
+demo/android/local.properties
+demo/android/.kotlin/
+.DS_Store
+__pycache__/
+dist/
+
+# Raw footage and transcripts for the film (large, local only).
+media/raw/

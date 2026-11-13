@@ -1,0 +1,6 @@
+{"t": 2000, "action": "launch", "screen": "", "goal": "start"}
+{"t": 2010, "action": "type \"Solar System\" into \"Search Wikipedia\"", "screen": "Search", "goal": "Search"}
+{"t": 2020, "action": "tap \"Solar System\"", "screen": "Search", "goal": "Search"}
+{"t": 2030, "action": "tap \"Language\"", "screen": "Solar System", "goal": "Change language"}
+{"t": 2040, "action": "tap \"Sonnestelsel\"", "screen": "All languages", "goal": "Change language"}
+{"t": 2050, "action": "tap \"Explore\"", "screen": "Sonnestelsel", "goal": "Explore feed"}

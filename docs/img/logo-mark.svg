@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><title>Unremote</title><rect width="512" height="512" rx="118" fill="#16161A"/>
+<mask id="cut"><rect width="512" height="512" fill="#fff"/><rect x="286" y="226" width="36" height="60" fill="#000"/></mask>
+<g mask="url(#cut)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="120" y="96" width="184" height="320" rx="44" stroke-width="24"/>
+  <path d="M184 372h56" stroke-width="16"/>
+</g>
+<g fill="none" stroke="#1FB57A" stroke-linecap="round" stroke-linejoin="round" stroke-width="24">
+  <path d="M176 176 C 176 226, 196 256, 236 256 H 352"/>
+</g>
+<circle cx="176" cy="168" r="22" fill="#1FB57A"/>
+<circle cx="382" cy="256" r="40" fill="#1FB57A"/>
+<circle cx="382" cy="256" r="14" fill="#16161A"/></svg>

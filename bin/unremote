@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# unremote: teach your AI agent any Android app once, then it uses the app through an MCP server.
+set -euo pipefail
+ROOT=$(cd "$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")/.." && pwd)
+U=$ROOT/unremote
+ADB=${ANDROID_SDK_ROOT:-$HOME/Library/Android/sdk}/platform-tools/adb
+CAPTURE=${UNREMOTE_SERIAL:-emulator-5554}
+
+usage() {
+  cat <<'EOF'
+unremote — turn any Android app into an MCP server your agent can call.
+
+  unremote setup                         boot the capture emulator and trust the proxy inside it
+  unremote import <package> <serial>     copy an app you installed (e.g. from the Play Store) to the capture emulator
+  unremote learn <package> <name> [--listing file] [--login k=v,k=v] [--allow-writes]
+                                         let the agent use the app, capture its API, generate the MCP server
+  unremote verify <name>                 check every read-only tool against the live API
+  unremote try <name> "<task>"           give Claude Code only this server and a task
+  unremote add <name>                    print the command that adds the server to Claude Code
+
+Generated servers live in generated/<name>/. Login values for an app go in generated/<name>/.env.
+EOF
+}
+
+envfile() { [ -f "$ROOT/generated/$1/.env" ] && set -a && . "$ROOT/generated/$1/.env" && set +a || true; }
+
+cmd=${1:-help}; shift || true
+case $cmd in
+  setup) "$U/emulator.sh" ;;
+  import) "$U/import_app.sh" "$1" "$2" "$CAPTURE" ;;
+  learn)
+    PKG=$1 NAME=$2; shift 2
+    LISTING="" LOGIN="" WRITES=block
+    while [ $# -gt 0 ]; do case $1 in
+      --listing) LISTING=$2; shift 2 ;;
+      --login) LOGIN=$2; shift 2 ;;
+      --allow-writes) WRITES=allow; shift ;;
+      *) echo "unknown option $1"; exit 2 ;;
+    esac; done
+    if [ -z "$LISTING" ]; then
+      LISTING=$(mktemp); echo "Android app $PKG. Explore its main features the way a new user would." > "$LISTING"
+    fi
+    ANDROID_SERIAL=$CAPTURE WRITES=$WRITES PYTHONUNBUFFERED=1 "$U/learn.sh" "$PKG" "$LISTING" "$NAME" "$LOGIN"
+    echo; echo "next:  unremote verify $NAME   ·   unremote try $NAME \"<task>\"" ;;
+  verify) envfile "$1"; (cd "$ROOT/generated/$1" && node verify.mjs) ;;
+  try)
+    NAME=$1 TASK=$2
+    LOGIN=$( [ -f "$ROOT/generated/$NAME/.env" ] && python3 - "$ROOT/generated/$NAME" <<'EOF' || true
+import json, sys
+d = sys.argv[1]
+cfg = json.load(open(f"{d}/unremote.config.json"))
+env = dict(l.strip().split("=", 1) for l in open(f"{d}/.env") if "=" in l)
+fields = (cfg.get("auth") or {}).get("login", {}).get("fields", {})
+print(",".join(f"{f}={env.get(v, '')}" for f, v in fields.items()))
+EOF
+)
+    envfile "$NAME"; EXTRA_CA=${NODE_EXTRA_CA_CERTS:-} "$U/e2e.sh" "$NAME" "$TASK" "$LOGIN" ;;
+  add)
+    echo "claude mcp add $1 -- node $ROOT/generated/$1/server.mjs"
+    echo "(login values: pass them with -e KEY=value, or keep them in generated/$1/.env and export them)" ;;
+  *) usage ;;
+esac

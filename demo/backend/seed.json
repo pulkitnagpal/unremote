@@ -1,0 +1,18 @@
+{
+  "users": [
+    { "id": "u_1001", "name": "Demo User", "email": "demo@showtime.test", "password": "showtime-demo" }
+  ],
+  "cities": [
+    { "city_id": "BLR", "name": "Bengaluru" },
+    { "city_id": "DEL", "name": "Delhi" }
+  ],
+  "theatres": {
+    "BLR": ["PVR Orion", "INOX Indiranagar"],
+    "DEL": ["PVR Select City", "Cinepolis Saket"]
+  },
+  "movies": [
+    { "movie_id": "mv_dune3", "title": "Dune: Part Three", "rating": "UA", "languages": ["English", "Hindi"], "runtime_min": 166, "cities": ["BLR", "DEL"], "times": ["16:00", "19:00", "22:15"], "price": 320 },
+    { "movie_id": "mv_kalki2", "title": "Kalki 2898 AD Part 2", "rating": "UA", "languages": ["Telugu", "Hindi"], "runtime_min": 172, "cities": ["BLR", "DEL"], "times": ["13:30", "18:45"], "price": 280 },
+    { "movie_id": "mv_paddington4", "title": "Paddington 4", "rating": "U", "languages": ["English"], "runtime_min": 104, "cities": ["BLR"], "times": ["11:00", "15:20"], "price": 220 }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "name": "showtime",
+  "base_url": "https://127.0.0.1:8443",
+  "headers": {
+    "accept": "application/json",
+    "x-device-id": "896f6398-05c5-4fca-b595-7406d6d76b87",
+    "x-app-version": "1.0.0"
+  },
+  "auth": {
+    "login": {
+      "endpoint": "POST /v2/auth/login",
+      "fields": {
+        "email": "SHOWTIME_EMAIL",
+        "password": "SHOWTIME_PASSWORD"
+      }
+    },
+    "token_path": "$.access_token",
+    "refresh_token_path": "$.refresh_token",
+    "refresh": null,
+    "header": "authorization"
+  },
+  "tools": [
+    {
+      "name": "list_cities",
+      "description": "Lists the cities ShowTime operates in (e.g. Bengaluru, Delhi). Use the returned city_id values as input to list_movies and list_showtimes.",
+      "endpoint": "GET /v2/cities",
+      "effect": "read",
+      "inputs": [],
+      "fixed": {}
+    },
+    {
+      "name": "list_movies",
+      "description": "Lists the movies now showing in a city, with each movie's rating, languages and runtime in minutes. city_id comes from list_cities; movie_id values in the result feed list_showtimes.",
+      "endpoint": "GET /v2/movies",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "city_id",
+          "in": "query",
+          "field": "city_id",
+          "type": "string",
+          "required": true,
+          "description": "City identifier, e.g. \"BLR\". Comes from list_cities."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "list_showtimes",
+      "description": "Lists showtimes with theatre, start time and price in INR for a movie in a city on a given date (today, tomorrow or the day after). movie_id comes from list_movies, city_id from list_cities; show_id values in the result feed get_seatmap.",
+      "endpoint": "GET /v2/movies/{movie_id}/shows",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "movie_id",
+          "in": "path",
+          "field": "movie_id",
+          "type": "string",
+          "required": true,
+          "description": "Movie identifier, e.g. \"mv_dune3\". Comes from list_movies."
+        },
+        {
+          "name": "city_id",
+          "in": "query",
+          "field": "city_id",
+          "type": "string",
+          "required": true,
+          "description": "City identifier, e.g. \"BLR\". Comes from list_cities."
+        },
+        {
+          "name": "date",
+          "in": "query",
+          "field": "date",
+          "type": "string",
+          "required": true,
+          "description": "Show date in format YYYY-MM-DD, e.g. 2026-11-13. Today, tomorrow or the day after."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "get_seatmap",
+      "description": "Shows the live seat map for a showtime, with each row's seats and their status (use it to pick free seats). show_id comes from list_showtimes.",
+      "endpoint": "GET /v2/shows/{show_id}/seatmap",
+      "effect": "read",
+      "inputs": [
+        {
+          "name": "show_id",
+          "in": "path",
+          "field": "show_id",
+          "type": "integer",
+          "required": true,
+          "description": "Show identifier, e.g. 66166. Comes from list_showtimes."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "hold_seats",
+      "description": "Places a temporary hold (about 10 minutes) on the chosen seats for a showtime. This changes state: confirm the show and seats with the user first. show_id comes from get_seatmap (or list_showtimes); seat_ids must be free seats from get_seatmap. Returns hold_id for checkout_hold.",
+      "endpoint": "POST /v2/shows/{show_id}/hold",
+      "effect": "write",
+      "inputs": [
+        {
+          "name": "show_id",
+          "in": "path",
+          "field": "show_id",
+          "type": "integer",
+          "required": true,
+          "description": "Show identifier, e.g. 66166. Comes from get_seatmap."
+        },
+        {
+          "name": "seat_ids",
+          "in": "body",
+          "field": "seat_ids",
+          "type": "string[]",
+          "required": true,
+          "description": "Seat IDs to hold, e.g. [\"A1\"]. Choose free seats from get_seatmap."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "checkout_hold",
+      "description": "Starts checkout for a held set of seats and returns the secure payment_url and total in INR. This changes state: confirm with the user first. hold_id comes from hold_seats. Does not pay; the user completes payment at the link.",
+      "endpoint": "POST /v2/holds/{hold_id}/checkout",
+      "effect": "write",
+      "inputs": [
+        {
+          "name": "hold_id",
+          "in": "path",
+          "field": "hold_id",
+          "type": "string",
+          "required": true,
+          "description": "Hold identifier, e.g. \"hl_1f67509cb8dc\". Comes from hold_seats."
+        }
+      ],
+      "fixed": {}
+    },
+    {
+      "name": "list_my_bookings",
+      "description": "Lists the signed-in user's bookings and holds, with show, seats, total in INR, status and time remaining before expiry.",
+      "endpoint": "GET /v2/me/bookings",
+      "effect": "read",
+      "inputs": [],
+      "fixed": {}
+    }
+  ]
+}

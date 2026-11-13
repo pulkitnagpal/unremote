@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Like a normal release app: trusts system CAs (plus the demo API's own self-signed cert). It does NOT trust user-installed CAs. -->
+<network-security-config>
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system" />
+      <certificates src="@raw/showtime_api" />
+    </trust-anchors>
+  </base-config>
+</network-security-config>

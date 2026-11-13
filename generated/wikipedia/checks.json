@@ -1,0 +1,136 @@
+[
+  {
+    "tool": "search_articles",
+    "args": {
+      "lang": "en",
+      "search": "Sol",
+      "thumbnail_size": 330
+    },
+    "expect_keys": [
+      "batchcomplete",
+      "continue",
+      "query"
+    ]
+  },
+  {
+    "tool": "get_article_summary",
+    "args": {
+      "lang": "en",
+      "title": "Solar_System"
+    },
+    "expect_keys": [
+      "content_urls",
+      "description",
+      "description_source",
+      "dir",
+      "displaytitle",
+      "extract",
+      "extract_html",
+      "lang",
+      "namespace",
+      "originalimage",
+      "pageid",
+      "revision",
+      "thumbnail",
+      "tid",
+      "timestamp",
+      "title",
+      "titles",
+      "type",
+      "wikibase_item"
+    ]
+  },
+  {
+    "tool": "get_article_content",
+    "args": {
+      "lang": "en",
+      "title": "Solar_System"
+    },
+    "expect_keys": []
+  },
+  {
+    "tool": "get_article_media",
+    "args": {
+      "lang": "af",
+      "title": "Sonnestelsel"
+    },
+    "expect_keys": [
+      "items",
+      "revision",
+      "tid"
+    ]
+  },
+  {
+    "tool": "get_article_languages",
+    "args": {
+      "lang": "en",
+      "titles": "Solar_System",
+      "limit": 500
+    },
+    "expect_keys": [
+      "batchcomplete",
+      "query"
+    ]
+  },
+  {
+    "tool": "list_wikipedia_languages",
+    "args": {
+      "lang": "en"
+    },
+    "expect_keys": [
+      "sitematrix"
+    ]
+  },
+  {
+    "tool": "get_article_info",
+    "args": {
+      "lang": "crh",
+      "titles": "Solar_System",
+      "thumbnail_size": 330
+    },
+    "expect_keys": [
+      "batchcomplete",
+      "query"
+    ]
+  },
+  {
+    "tool": "get_featured_feed",
+    "args": {
+      "lang": "en",
+      "year": "2026",
+      "month": "11",
+      "day": "13"
+    },
+    "expect_keys": [
+      "dyk",
+      "image",
+      "mostread",
+      "news",
+      "onthisday",
+      "tfa"
+    ]
+  },
+  {
+    "tool": "get_on_this_day",
+    "args": {
+      "lang": "en",
+      "month": "11",
+      "day": "13"
+    },
+    "expect_keys": [
+      "events"
+    ]
+  },
+  {
+    "tool": "get_random_articles",
+    "args": {
+      "lang": "en",
+      "extract_chars": 500,
+      "thumbnail_size": 330
+    },
+    "expect_keys": [
+      "continue",
+      "query"
+    ]
+  }
+]
